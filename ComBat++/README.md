@@ -1,8 +1,6 @@
 # ComBat++ harmonization in R
 
-## Multi-Site Harmonization
-
-ComBat++ estimates scanner-specific location and scale parameters, for each feature separately, and pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies.  
+ComBat++ is an extension of ComBat by also modeling non-biological covariates, which we would like to remove from the data. As in Combat, it estimates site-specific location and scale parameters, and accounts for biological covariates. ComBat pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies.  
 
 ### ComBat++
 
