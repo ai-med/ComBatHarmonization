@@ -51,18 +51,6 @@ The `data.harmonized` object also contains the different parameters estimated by
 
 
 
-### ComBat without empirical Bayes
-
-Sometimes, it is preferable not to pool information across features, for instance if:
-- (1) The number of features is substantially smaller than the number of participants (p << n) or
-- (2) The prior distributions used in ComBat do not fit well the data
-- (3) The site effects are only present for a small subset of features
-
-An example of (2) is when the site/scanner effects are highly heteregenous across features, for instance differential scanner effects between white matter (WM) or grey matter (GM) voxels exist. To run the ComBat model without empirical Bayes, which boils down to fitting a location/shift (L/S) model for each feature separately, the option `eb=FALSE` can be used:
-
-```r
-data.harmonized <- combatPP(dat=dat, batch=batch, PC=var_remove, mod=mod, eb=FALSE)
-```
 
 
 
