@@ -37,7 +37,7 @@ mod_remove <- model.matrix(~ MFS)
 prcomps <- princomp(t(dat))
 PCs <- predict(prcomps,t(dat))
 
-var_remove=cbind(mod_remove,PCs[,c(1,2)])
+var_remove <- cbind(mod_remove,PCs[,c(1,2)])
 
 data.harmonized <- combatPP( dat=dat, PC=var_remove, mod=mod, batch=batch)
 ```
