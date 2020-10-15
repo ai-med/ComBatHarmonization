@@ -1,10 +1,10 @@
 # ComBat++ harmonization in R
 
-## 2. Multi-Site Harmonization
+## Multi-Site Harmonization
 
 ComBat++ estimates scanner-specific location and scale parameters, for each feature separately, and pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies.  
 
-### 2.1 ComBat++
+### ComBat++
 
 The  `combatPP` function is the main function. It requires two mandatory arguments:
 - a data matrix (p x n) `dat` for which the p rows are features, and the n columns are participants. 
@@ -51,7 +51,7 @@ The `data.harmonized` object also contains the different parameters estimated by
 
 
 
-### 2.2 ComBat without empirical Bayes
+### ComBat without empirical Bayes
 
 Sometimes, it is preferable not to pool information across features, for instance if:
 - (1) The number of features is substantially smaller than the number of participants (p << n) or
