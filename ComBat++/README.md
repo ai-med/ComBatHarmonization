@@ -8,7 +8,7 @@ The  `combatPP` function is the main function. It requires two mandatory argumen
 - a data matrix (p x n) `dat` for which the p rows are features, and the n columns are participants. 
 - a numeric or character vector `batch` of length n indicating the site/scanner/study id. 
 
-For illustration purpose, let's simulate an imaging dataset with n=10 participants, acquired on 2 scanners, with 5 participants each, with p=9 variables per scan. 
+For illustration purpose, let's simulate an imaging dataset with n=10 participants, acquired on 2 sites, with 5 participants each, with p=9 variables per scan. 
 
 ```r
 source("utils.R");
@@ -26,7 +26,7 @@ disease <- as.factor(c(1,2,1,2,1,2,1,2,1,2)) # Categorical variable
 mod <- model.matrix(~age+disease)
 ```
 
-In ComBat++, we further model non-biological covariates that we would like to remove. This can be known variation from variables like magnetic field strength (MFS) and manufacturer, or unknown variation, which we compute with PCA. 
+In ComBat++, we further model non-biological covariates that we would like to remove. This can be known variation from variables like magnetic field strength (MFS) and manufacturer, or unknown variation, which we compute with PCA. In the example, we consider 5 scans on 1.5T and 5 scans on 3.0T machines. 
 
 ```r
 MFS <- as.factor(c(1,1,1,2,2,2,1,1,2,2)) # Categorical variable
