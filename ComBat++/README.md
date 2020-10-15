@@ -1,4 +1,4 @@
-# ComBat harmonization in R
+# ComBat++ harmonization in R
 
 ## Table of content
 - [1. Installation](#id-section1)
