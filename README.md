@@ -1,7 +1,7 @@
 # Detect and Correct Bias in Multi-Site Neuroimaging Datasets
 
 
-Source code for our styudy on detecting and correcting Bias in Multi-Site Neuroimaging Datasets. 
+Source code for our study on detecting and correcting Bias in Multi-Site Neuroimaging Datasets. 
 
 Manuscript: https://arxiv.org/abs/2002.05049
 
