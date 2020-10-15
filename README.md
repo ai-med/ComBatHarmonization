@@ -1,4 +1,4 @@
-# Dataset-Bias
+# Detect and Correct Bias in Multi-Site Neuroimaging Datasets
 
 Detect and Correct Bias in Multi-Site Neuroimaging Datasets
 
