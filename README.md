@@ -6,6 +6,8 @@ The repository contains [ComBat++](ComBat++) for the harmonization of data and [
 
 Manuscript: https://arxiv.org/abs/2002.05049
 
+Authors: [Sebastian Pölsterl](https://github.com/sebp) and [Christian Wachinger](https://github.com/wachinger)
+
 Please cite: 
 ```
 @article{wachinger2020detect,
