@@ -1,5 +1,14 @@
 # Telling Causal from Confounded with Causal Inference
 
+To check whether a observed association between a set of features `X` and and outcome `Y` is due to
+`X` causing `Y`, or an unknown confounder `Z`, we compare two models in terms of minimum description length:
+
+1. The causal model: A Bayesian linear regression model,
+2. The confounded model: A Probabilistic PCA model.
+
+The model that explains the data better in terms of minimum description length is likely the true model.
+Please see Section 4 in (Wachinger et al., MedIA, https://arxiv.org/abs/2002.05049) for the full details.
+
 ## Usage
 
 ```python
@@ -170,7 +179,4 @@ For our experiments, we used R version 3.6.2 with the following packages:
 ## Acknowledgments
 
 Our approach to compare causal and confounded models via minimum description length (MDL)
-is based on
-```
-Kaltenpoth, D., Vreeken, J., 2019. We are not your real parents: Telling causal from confounded by MDL. In: SIAM International Conference on Data Mining.
-```
+is based on the work of Kaltenpoth and Vreeken. [We are not your real parents: Telling causal from confounded by MDL](https://epubs.siam.org/doi/abs/10.1137/1.9781611975673.23). In: ICDM. 2019.
