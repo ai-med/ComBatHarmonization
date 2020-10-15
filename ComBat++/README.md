@@ -39,7 +39,7 @@ PCs <- predict(prcomps,t(dat))
 
 var_remove=cbind(mod_remove,PCs[,c(1,2)])
 
-combat.harmonized <- combatPP( dat=dat, PC=var_remove, mod=mod, batch=batch)
+data.harmonized <- combatPP( dat=dat, PC=var_remove, mod=mod, batch=batch)
 ```
 
 The harmonized matrix is stored in `data.harmonized$dat.combat`. 
