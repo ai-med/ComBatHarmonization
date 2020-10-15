@@ -1,6 +1,6 @@
-# ComBat++ harmonization in R
+# ComBat++ harmonization 
 
-ComBat++ is an extension of ComBat by also modeling non-biological covariates, which we would like to remove from the data. As in Combat, it estimates site-specific location and scale parameters, and accounts for biological covariates. ComBat pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies.  
+ComBat++ is an extension of ComBat by also modeling non-biological covariates, which we would like to remove from the data. As in Combat, it estimates site-specific location and scale parameters, and accounts for biological covariates. ComBat pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies. The details are described in Section 5 in (Wachinger et al., MedIA, https://arxiv.org/abs/2002.05049). 
 
 ### ComBat++
 
@@ -48,7 +48,9 @@ The `data.harmonized` object also contains the different parameters estimated by
 - `gamma.bar`, `t2`, `a.prior` and `b.prior`: esimated prior distributions parameters.
 
 
+### References
 
+ComBat++ is published in (https://arxiv.org/abs/2002.05049). It is based on ComBat, which was orgiginally proposed for gene expression data (https://doi.org/10.1093/biostatistics/kxj037) and later applied to neuroimaging (https://doi.org/10.1016/j.neuroimage.2017.11.024). 
 
 
 
