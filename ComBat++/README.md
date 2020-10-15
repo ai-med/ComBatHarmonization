@@ -15,10 +15,10 @@ For illustration purpose, let's simulate an imaging dataset with n=10 participan
 ```r
 source("utils.R");
 source("combatPP.R")
-p=8
-n=10
-batch = c(1,1,1,1,1,2,2,2,2,2) #Batch variable for the scanner id
-dat = matrix(runif(p*n), p, n) #Random Data matrix
+p <- 8
+n <- 10
+batch <- c(1,1,1,1,1,2,2,2,2,2) #Batch variable for the scanner id
+dat <- matrix(runif(p*n), p, n) #Random Data matrix
 ```
 
 Biological covariates that should be preserved in the harmonization, e.g., age and disease
