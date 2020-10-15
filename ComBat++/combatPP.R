@@ -3,7 +3,7 @@
 # If using this code, make sure you agree and accept this license. 
 
 
-combatPP <- function(dat, batch, PC, mod=NULL, eb=TRUE, verbose=TRUE, parametric=TRUE){
+combatPP <- function(dat, batch, PC=NULL, mod=NULL, eb=TRUE, verbose=TRUE, parametric=TRUE){
   dat <- as.matrix(dat)
   
   .checkConstantRows <- function(dat){
@@ -73,16 +73,18 @@ combatPP <- function(dat, batch, PC, mod=NULL, eb=TRUE, verbose=TRUE, parametric
   s.data <- (dat-stand.mean)/(tcrossprod(sqrt(var.pooled), rep(1,n.array)))
   
   # ComBatPP: updated stand.mean without PC
-  stand.mean <- crossprod(grand.mean, t(rep(1,n.array)))
-  n.PC <- dim(PC)[2]
-  checkPC <- apply(PC, 2, function(x) all(x == 1))  # all 1 columns removed from design
-  numAllOnePC <- sum(checkPC)
-  cat("All one columns in PC: ", numAllOnePC, "\n")
-  #print(dim(design))
-  #print(n.batch+n.PC-numAllOnePC)
-  tmp <- design; tmp[,c(1:(n.batch+n.PC-numAllOnePC))] <- 0
-  stand.mean <- stand.mean+t(tmp%*%B.hat)
-  
+  if(!is.null(PC)){
+    stand.mean <- crossprod(grand.mean, t(rep(1,n.array)))
+    n.PC <- dim(PC)[2]
+    checkPC <- apply(PC, 2, function(x) all(x == 1))  # all 1 columns removed from design
+    numAllOnePC <- sum(checkPC)
+    cat("All one columns in PC: ", numAllOnePC, "\n")
+    #print(dim(design))
+    #print(n.batch+n.PC-numAllOnePC)
+    tmp <- design; tmp[,c(1:(n.batch+n.PC-numAllOnePC))] <- 0
+    stand.mean <- stand.mean+t(tmp%*%B.hat)
+  }
+    
   ##Get regression batch effect parameters
   if (eb){
       if (verbose) cat("[combat] Fitting L/S model and finding priors\n")
