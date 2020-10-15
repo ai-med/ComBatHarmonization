@@ -61,7 +61,7 @@ Sometimes, it is preferable not to pool information across features, for instanc
 An example of (2) is when the site/scanner effects are highly heteregenous across features, for instance differential scanner effects between white matter (WM) or grey matter (GM) voxels exist. To run the ComBat model without empirical Bayes, which boils down to fitting a location/shift (L/S) model for each feature separately, the option `eb=FALSE` can be used:
 
 ```r
-data.harmonized <- combat(dat=dat, batch=batch, eb=FALSE)
+data.harmonized <- combatPP(dat=dat, batch=batch, PC=var_remove, mod=mod, eb=FALSE)
 ```
 
 
