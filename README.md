@@ -1,72 +1,99 @@
-# ComBatHarmonization
-### Harmonization of multi-site imaging data with ComBat
-
---------
-**Maintainer**: Jean-Philippe Fortin, fortin946@gmail.com
-
-**License**: Artistic License 2.0
-
-**References**: If you are using ComBat for the harmonization of multi-site imaging data, please cite the following papers:
-
-|       | Citation     | Paper Link
-| -------------  | -------------  | -------------  |
-| ComBat for multi-site DTI data    | Jean-Philippe Fortin, Drew Parker, Birkan Tunc, Takanori Watanabe, Mark A Elliott, Kosha Ruparel, David R Roalf, Theodore D Satterthwaite, Ruben C Gur, Raquel E Gur, Robert T Schultz, Ragini Verma, Russell T Shinohara. **Harmonization Of Multi-Site Diffusion Tensor Imaging Data**. NeuroImage, 161, 149-170, 2017  |[Link](https://www.sciencedirect.com/science/article/pii/S1053811917306948?via%3Dihub#!)| 
-| ComBat for multi-site cortical thickness measurements    | Jean-Philippe Fortin, Nicholas Cullen, Yvette I. Sheline, Warren D. Taylor, Irem Aselcioglu, Philip A. Cook, Phil Adams, Crystal Cooper, Maurizio Fava, Patrick J. McGrath, Melvin McInnis, Mary L. Phillips, Madhukar H. Trivedi, Myrna M. Weissman, Russell T. Shinohara. **Harmonization of cortical thickness measurements across scanners and sites**. NeuroImage, 167, 104-120, 2018  |[Link](https://www.sciencedirect.com/science/article/pii/S105381191730931X)| 
-| Original ComBat paper for gene expression array    |  W. Evan Johnson and Cheng Li, **Adjusting batch effects in microarray expression data using empirical Bayes methods**. Biostatistics, 8(1):118-127, 2007.      | [Link](https://academic.oup.com/biostatistics/article/8/1/118/252073/Adjusting-batch-effects-in-microarray-expression) |
-
+# ComBat harmonization in R
 
 ## Table of content
-- [1. Introduction](#id-section1)
-- [2. Software](#id-section2)
-- [3. Testing](#id-section3)
+- [1. Installation](#id-section1)
+- [2. Harmonization](#id-section2)
+- [3. Visualization](#id-section3)
 
 <div id='id-section1'/>
 
-## 1. Introduction
-
-Imaging data suffer from technical between-scanner variation that hinders comparisons of images across imaging sites, scanners and over time. This includes common imaging modalities, such as MRI, fMRI and DTI, as well as measurements derived from those modalities, for instance ROI volumes, RAVENS maps, cortical thickness measurements, connectome matrices, etc. To maximize statistical power, post-processing data harmonization is a powerful technique to remove unwanted variation when combining data across scanners and sites. 
-
-In two recent papers ([harmonization of DTI data](https://www.sciencedirect.com/science/article/pii/S1053811917306948?via%3Dihub#!) and [harmonization of cortical thickness measurements](https://www.sciencedirect.com/science/article/pii/S105381191730931X)) we have shown that [ComBat](https://academic.oup.com/biostatistics/article/8/1/118/252073/Adjusting-batch-effects-in-microarray-expression), a popular batch-effect correction tool used in genomics, succesffuly removes inter-site technical variability while preserving inter-site biological variability. We showed that ComBat performs well for multi-site imaging studies that only have a few participants per site. We also showed that ComBat was robust to unbalanced studies, that is studies for which the biological covariate of interest is not balanced across sites. 
-
-We recommend to use the ComBat harmonization method after imaging processing, just right before the statistical analysis. The ComBat harmonization requires the imaging data to be represented in a matrix where rows are the imaging features (for instance voxels, ROIs or connectome edges) and columns are the participants. For example, for voxel-level analyses, this usually requires the images to be registered to a common template space. 
-
-The ComBat algorithm needs two mandatory inputs:
-- ***The data matrix***. Rows are features and columns are participants. 
-- ***The site, study or scanner variable***. The algorithm can only handle one variable. You should provide the smallest unit of the study that you believe introduces unwanted variable. For instance, for a study with 2 sites and 3 scanners (1 site with 1 scanner, 1 site with 2 scanners), the variable for scanner should be used. 
-
-The ComBat algorithm also accepts an optional input:
-- ***Biological variables***. You can provide biological covariates, such as disease status, age, gender, to ensure that the harmonization technique does not remove the effects of those variables on the imaging data. The algorithm will take the variability associated with those variables in the estimation of the site/scanner effects. 
+## 1. Installation
+ 
+To use ComBat, load the two scripts `/scripts/combat.R` and `scripts/utils.R` into an R session.
 
 <div id='id-section2'/>
 
-## 2. Software
+## 2. Multi-Site Harmonization
 
-The reference implementation (Standard Version) of ComBat, developed for gene expression analyses, is written in R and is part of the `sva` package available through the Bioconductor project [here](https://bioconductor.org/packages/release/bioc/html/sva.html). We include here a reimplementation of ComBat in both R and Matlab for the harmonization of imaging data. Our implementation extends the original code for more flexibility and additional visualization of the internal components of the algorithm. We are also currently working on several extensions of the original method that will be included here as well. We use the same open-source license as the `sva` package, that is the Artistic License 2.0. 
+ComBat estimates scanner-specific location and scale parameters, for each feature separately, and pools information across features using empirical Bayes to improve the estimation of those parameters for small sample size studies.  
 
-**Tutorials, instructions and examples for using ComBat:**
-- [R implementation](https://github.com/Jfortin1/ComBatHarmonization/tree/master/R)
-- [Matlab implementation](https://github.com/Jfortin1/ComBatHarmonization/tree/master/Matlab)
+### 2.1 Full ComBat with empirical Bayes
 
-<div id='id-section2'/>
+The  `combat` function is the main function. It requires two mandatory arguments:
+- a data matrix (p x n) `dat` for which the p rows are features, and the n columns are participants. 
+- a numeric or character vector `batch` of length n indicating the site/scanner/study id. 
 
-## 3. Problem of missing values (NA and NaN)
+For illustration purpose, let's simulate an imaging dataset with n=10 participants, acquired on 2 scanners, with 5 participants each, with p=10000 voxels per scan. 
 
-- Make sure that your input data matrix to ComBat only includes finite values (no NA or NaN).
-- Make sure to remove constant rows (for instance features that are 0 for all scans); not removing these rows will cause an error in ComBat or return NaN values. 
+```r
+source("scripts/utils.R");
+source("scripts/combat.R")
+p=10000
+n=10
+batch = c(1,1,1,1,1,2,2,2,2,2) #Batch variable for the scanner id
+dat = matrix(runif(p*n), p, n) #Random Data matrix
+```
+We use the function `combat` to harmonize the data across the 2 scanners:
 
+```r
+data.harmonized <- combat(dat=dat, batch=batch)
+```
+By default, this uses parametric adjustments. To following command must be used for non-parametric adjustments:
+```r
+data.harmonized <- combat(dat=dat, batch=batch, parametric=FALSE)
+```
 
+The harmonized matrix is stored in `data.harmonized$dat.combat`. The `data.harmonized` object also contains the different parameters estimated by ComBat:
+- `gamma.hat` and `delta.hat`: Estimated location and shift (L/S) parameters before empirical Bayes.
+- `gamma.star` and `delta.star`: Empirical Bayes estimated L/S parameters.
+- `gamma.bar`, `t2`, `a.prior` and `b.prior`: esimated prior distributions parameters.
 
-## 4. Testing
+The ComBat algorithm also accepts an optional argument, `mod`, which is a matrix containing biological covariates, including the outcome of interest. This is recommended to ensure that biological variability is preserved in the harmonization process. For instance, for a study with age and disease covariates,
+```r
+age <- c(82,70,68,66,80,69,72,76,74,80) # Continuous variable
+disease <- as.factor(c(1,2,1,2,1,2,1,2,1,2)) # Categorical variable
+```
+we ceate a model matrix for these two biological covariates using the `model.matrix` function:
+```r
+mod <- model.matrix(~age+disease)
+mod
+> mod
+   (Intercept) age disease2
+1            1  82        0
+2            1  70        1
+3            1  68        0
+4            1  66        1
+5            1  80        0
+6            1  69        1
+7            1  72        0
+8            1  76        1
+9            1  74        0
+10           1  80        1
+```
+The matrix `mod` is a n x 3 matrix, containing an intercept, age and a dummy variable for the second level of the disease variable (the first level is taken as the baseline group). Note that including an intercept in the model matrix will not change the results of the algorithm; ComBat automatically removes the intercept from the model matrix when fitting the models. We now harmonize the data:
 
-The `Testing` directory contains code for comparing and testing the outputs from R and Matlab. 
+```r
+combat.harmonized <- combat(dat=dat, batch=batch, mod=mod)
+```
 
-## 5. News
+### 2.2 ComBat without empirical Bayes
 
-05-19-2019: Added the option of running the non-parametric version of ComBat in the Matlab implementation. 
+Sometimes, it is preferable not to pool information across features, for instance if:
+- (1) The number of features is substantially smaller than the number of participants (p << n) or
+- (2) The prior distributions used in ComBat do not fit well the data
+- (3) The site effects are only present for a small subset of features
 
-05-19-2019: Added the option of running the non-parametric version of ComBat in the R implementation. 
+An example of (2) is when the site/scanner effects are highly heteregenous across features, for instance differential scanner effects between white matter (WM) or grey matter (GM) voxels exist. To run the ComBat model without empirical Bayes, which boils down to fitting a location/shift (L/S) model for each feature separately, the option `eb=FALSE` can be used:
 
+```r
+data.harmonized <- combat(dat=dat, batch=batch, eb=FALSE)
+```
 
+<div id='id-section3'/>
+
+## 3. Visualization
+
+Coming soon.
 
 
 
